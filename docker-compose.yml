@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  cassandra1:
+    image: cassandra
+    restart: unless-stopped
+    cap_add:
+      - CAP_SYS_NICE # Cassandra use mbind on NUMA system
+    labels:
+      glouton.enable: "false"
+    environment:
+      - "MAX_HEAP_SIZE=128M"
+      - "HEAP_NEWSIZE=24M"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2"
+    networks:
+      default:
+        ipv4_address: 172.28.0.51
+  cassandra2:
+    image: cassandra
+    restart: unless-stopped
+    cap_add:
+      - CAP_SYS_NICE # Cassandra use mbind on NUMA system
+    labels:
+      glouton.enable: "false"
+    environment:
+      - "MAX_HEAP_SIZE=128M"
+      - "HEAP_NEWSIZE=24M"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2"
+    networks:
+      default:
+        ipv4_address: 172.28.0.52
+  cassandra3:
+    image: cassandra
+    restart: unless-stopped
+    cap_add:
+      - CAP_SYS_NICE # Cassandra use mbind on NUMA system
+    labels:
+      glouton.enable: "false"
+    environment:
+      - "MAX_HEAP_SIZE=128M"
+      - "HEAP_NEWSIZE=24M"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2"
+    networks:
+      default:
+        ipv4_address: 172.28.0.53
+
+  goclient:
+    build: ./goclient
+  pyclient:
+    build: pyclient
+
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
